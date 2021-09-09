@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     # Third party apps
     "django_extensions",
     "debug_toolbar",
+    "rest_framework",
+    "rest_framework.authtoken",
     # Django Apps
     "django.contrib.admin",
     "django.contrib.auth",
