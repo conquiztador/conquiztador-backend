@@ -20,9 +20,12 @@ from rest_framework.authtoken import views as authtoken_views
 from rest_framework.routers import DefaultRouter
 
 from conquiztador.contrib.users.views import UserViewSet
+from conquiztador.contrib.questions.views import QuestionViewSet
 
 router = DefaultRouter()
 router.register(r"users", UserViewSet, basename="user")
+router.register(r"questions", QuestionViewSet, basename="question")
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
