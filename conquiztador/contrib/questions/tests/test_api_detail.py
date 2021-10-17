@@ -3,8 +3,6 @@ from rest_framework.test import APITestCase
 
 from conquiztador.mixins import TestMixin
 
-from ..models import Question
-
 
 class QuestionDetailTestCase(APITestCase, TestMixin):
     def setUp(self):
