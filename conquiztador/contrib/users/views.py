@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import permissions, viewsets
+from rest_framework.authtoken import views as authtoken_views
 
 from . import permissions as custom_permissions
 from . import serializers
@@ -45,3 +46,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return UserModel.objects.filter(pk=self.request.user.pk)
+
+
+class ObtainAuthToken(authtoken_views.ObtainAuthToken):
+    serializer_class = serializers.AuthTokenSerializer
