@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 
-from conquiztador.contrib.questions.models import Answer, Question
+from conquiztador.contrib.questions.models import Answer, Category, Question
 
 UserModel = get_user_model()
 
@@ -13,11 +13,17 @@ class TestMixin:
             email=email, password=password, **extra_fields
         )
 
-    def create_question(self, text="Question text", author=None):
-        return Question.objects.create(
+    def create_question(self, text="Question text", author=None, categories=None):
+        question = Question.objects.create(
             text=text,
             author=author or self.user,
         )
+
+        if categories:
+            question.categories.set(categories)
+            question.save()
+
+        return question
 
     def create_answer(
         self, text="Answer text", is_correct=False, question=None, author=None
@@ -27,4 +33,9 @@ class TestMixin:
             is_correct=is_correct,
             question=question or self.question,
             author=author or self.user,
+        )
+
+    def create_category(self, name="Category name"):
+        return Category.objects.create(
+            name=name,
         )

@@ -7,7 +7,8 @@ from conquiztador.mixins import TestMixin
 class QuestionDetailTestCase(APITestCase, TestMixin):
     def setUp(self):
         self.user = self.create_user()
-        self.question = self.create_question()
+        self.category = self.create_category()
+        self.question = self.create_question(categories=[self.category])
 
         self.create_answer(text="Answer 1")
         self.create_answer(text="Answer 2")
@@ -36,6 +37,13 @@ class QuestionDetailTestCase(APITestCase, TestMixin):
                     "text": answer.text,
                 }
                 for answer in question.answers.all()
+            ],
+            "categories": [
+                {
+                    "uuid": str(category.pk),
+                    "name": category.name,
+                }
+                for category in question.categories.all()
             ],
             "updated_at": question.updated_at.astimezone().isoformat(),
             "created_at": question.created_at.astimezone().isoformat(),

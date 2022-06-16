@@ -11,7 +11,7 @@ class QuestionViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = serializers.QuestionSerializer
-    http_method_names = ("get",)
+    http_method_names = ("get", "post")
     queryset = models.Question.objects.all()
 
     def get_serializer_class(self):
@@ -20,9 +20,26 @@ class QuestionViewSet(
 
         return super().get_serializer_class()
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        categories = models.Category.objects.filter(pk=self.request.query_params.get('category'))
+
+        if categories:
+            queryset = queryset.filter(categories__in=categories)
+
+        return queryset
+
     @action(detail=False, methods=("get",), url_path="random")
     def get_random(self, request, pk=None):
-        question = models.Question.objects.get_random()
+        categoryName = self.request.query_params.get('category')
+
+        if categoryName:
+            category = models.Category.objects.filter(pk=categoryName).first()
+        else:
+            category = None
+
+        question = models.Question.objects.get_random(category)
 
         serializer = serializers.QuestionSerializer(
             question, context={"request": request}, many=False
@@ -43,3 +60,13 @@ class QuestionViewSet(
         )
 
         return Response({"is_correct": is_correct})
+
+
+class CategoryViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    serializer_class = serializers.CategorySerializer
+    http_method_names = ("get",)
+    queryset = models.Category.objects.all()
