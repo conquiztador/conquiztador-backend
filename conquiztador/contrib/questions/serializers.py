@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Answer, Question
+from .models import Answer, Category, Question
 
 
 class AnswerInlineSerializer(serializers.ModelSerializer):
@@ -11,11 +11,23 @@ class AnswerInlineSerializer(serializers.ModelSerializer):
             "text",
         )
 
+
 class AnswerValidationSerializer(serializers.Serializer):
     uuid = serializers.UUIDField()
 
+
+class CategoryInlineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = (
+            "uuid",
+            "name",
+        )
+
+
 class QuestionSerializer(serializers.HyperlinkedModelSerializer):
     answers = AnswerInlineSerializer(many=True, read_only=True)
+    categories = CategoryInlineSerializer(many=True, read_only=True)
 
     class Meta:
         model = Question
@@ -24,6 +36,19 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
             "uuid",
             "text",
             "answers",
+            "categories",
+            "created_at",
+            "updated_at",
+        )
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = (
+            "url",
+            "uuid",
+            "name",
             "created_at",
             "updated_at",
         )

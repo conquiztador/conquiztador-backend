@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Answer, Question
+from .models import Answer, Category, Question
 
 
 class AnswerInline(admin.TabularInline):
@@ -17,3 +17,10 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [
         AnswerInline,
     ]
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "created_at", "updated_at")
+    list_per_page = 15
+    search_fields = ("name",)

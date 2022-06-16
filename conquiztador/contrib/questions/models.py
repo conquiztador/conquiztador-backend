@@ -12,11 +12,31 @@ from . import managers
 UserModel = get_user_model()
 
 
+class Category(TimestampedModel):
+    uuid = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    name = models.CharField(_("Name"), max_length=254)
+
+    class Meta:
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("category:detail", kwargs={"pk": self.pk})
+
+
 class Question(TimestampedModel):
     uuid = models.UUIDField(default=uuid.uuid4, primary_key=True)
     text = models.CharField(_("Text"), max_length=254)
     author = models.ForeignKey(
         UserModel, related_name="questions", on_delete=models.CASCADE
+    )
+    categories = models.ManyToManyField(
+        Category,
+        related_name="questions",
+        verbose_name=_("Category"),
     )
 
     objects = managers.QuestionManager()
