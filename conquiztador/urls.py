@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from conquiztador.contrib.questions.views import QuestionViewSet
+from conquiztador.contrib.questions.views import CategoryViewSet, QuestionViewSet
 from conquiztador.contrib.users.views import ObtainAuthToken, UserViewSet
 
 router = DefaultRouter()
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"questions", QuestionViewSet, basename="question")
+router.register(r"categories", CategoryViewSet, basename="category")
 
 
 urlpatterns = [

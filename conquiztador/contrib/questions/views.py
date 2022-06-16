@@ -43,3 +43,35 @@ class QuestionViewSet(
         )
 
         return Response({"is_correct": is_correct})
+
+
+class CategoryViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    serializer_class = serializers.CategorySerializer
+    http_method_names = ("get",)
+    queryset = models.Category.objects.all()
+
+    @action(detail=True, methods=("get",))
+    def questions(self, request, pk=None):
+        category = self.get_object()
+        questions = category.questions.all()
+
+        serializer = serializers.QuestionSerializer(
+            questions, context={"request": request}, many=True
+        )
+
+        return Response(serializer.data)
+
+    @action(detail=True, methods=("get",), url_path="questions/random")
+    def random_question(self, request, pk=None):
+        category = self.get_object()
+        question = category.questions.get_random()
+
+        serializer = serializers.QuestionSerializer(
+            question, context={"request": request}, many=False
+        )
+
+        return Response(serializer.data)
