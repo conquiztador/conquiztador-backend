@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.http import Http404
+from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions, viewsets
 from rest_framework.authtoken import views as authtoken_views
+from rest_framework.exceptions import NotFound
 
 from . import permissions as custom_permissions
 from . import serializers
@@ -46,6 +49,12 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return UserModel.objects.filter(pk=self.request.user.pk)
+
+    def get_object(self):
+        try:
+            return super().get_object()
+        except Http404:
+            raise NotFound(detail=_("Not found."))
 
 
 class ObtainAuthToken(authtoken_views.ObtainAuthToken):

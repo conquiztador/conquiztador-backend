@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from conquiztador.contrib.questions.views import CategoryViewSet, QuestionViewSet
+from conquiztador.contrib.questions.views import (CategoryViewSet,
+                                                  QuestionViewSet)
 from conquiztador.contrib.users.views import ObtainAuthToken, UserViewSet
 
 router = DefaultRouter()

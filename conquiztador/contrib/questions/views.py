@@ -23,7 +23,9 @@ class QuestionViewSet(
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        categories = models.Category.objects.filter(pk=self.request.query_params.get('category'))
+        categories = models.Category.objects.filter(
+            pk=self.request.query_params.get("category")
+        )
 
         if categories:
             queryset = queryset.filter(categories__in=categories)
@@ -32,7 +34,7 @@ class QuestionViewSet(
 
     @action(detail=False, methods=("get",), url_path="random")
     def get_random(self, request, pk=None):
-        categoryName = self.request.query_params.get('category')
+        categoryName = self.request.query_params.get("category")
 
         if categoryName:
             category = models.Category.objects.filter(pk=categoryName).first()
