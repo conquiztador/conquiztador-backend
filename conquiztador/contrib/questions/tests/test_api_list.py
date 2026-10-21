@@ -98,3 +98,17 @@ class QuestionListTestCase(APITestCase, TestMixin):
         }
 
         self.assertDictEqual(response.json(), expected_response)
+
+    def test_get_random_filtered_by_category(self):
+        other_category = self.create_category(name="Another category")
+        other_question = self.create_question(
+            text="Another question",
+            categories=[other_category],
+        )
+
+        url = reverse("question-get-random")
+        response = self.client.get(url, {"category": self.category.pk}, format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["uuid"], str(self.question.pk))
+        self.assertNotEqual(response.json()["uuid"], str(other_question.pk))

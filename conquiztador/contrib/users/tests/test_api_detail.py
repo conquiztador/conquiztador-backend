@@ -98,6 +98,20 @@ class UserDetailTestCase(APITestCase, TestMixin):
 
         self.assertDictEqual(response.json(), expected_response)
 
+    def test_cannot_patch_with_invalid_current_password(self):
+        url = reverse("user-detail", args=[self.user.pk])
+
+        data = {"current_password": "wrong-password", "new_password": "new_password"}
+
+        response = self.client.patch(url, data=data, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("current_password", response.json())
+        self.assertEqual(
+            response.json()["current_password"],
+            {"current_password": "Invalid current password"},
+        )
+
     def test_cannot_patch_other_fields(self):
         url = reverse("user-detail", args=[self.user.pk])
 

@@ -68,3 +68,19 @@ class UserListTestCase(APITestCase, TestMixin):
         }
 
         self.assertDictEqual(response.json(), expected_response)
+
+    def test_obtain_token_requires_valid_credentials(self):
+        url = "/api/token/"
+
+        response = self.client.post(
+            url,
+            data={"email": "john.doe@example.com", "password": "wrong-password"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("non_field_errors", response.json())
+        self.assertEqual(
+            response.json()["non_field_errors"],
+            ["Unable to log in with provided credentials."],
+        )

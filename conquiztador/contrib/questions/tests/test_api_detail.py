@@ -82,3 +82,12 @@ class QuestionDetailTestCase(APITestCase, TestMixin):
         expected_response = {"is_correct": False}
 
         self.assertDictEqual(response.json(), expected_response)
+
+    def test_validate_answer_invalid_uuid(self):
+        url = reverse("question-validate-answer", args=[self.question.pk])
+
+        response = self.client.post(url, format="json", data={"uuid": "not-a-uuid"})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("uuid", response.json())
+        self.assertIn("valid UUID", response.json()["uuid"][0])
